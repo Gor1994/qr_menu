@@ -20,6 +20,7 @@ import WaiterButton from "./components/menu/WaiterButton";
 
 
 import "./App.css";
+import Tables from "./components/admin/Tables";
 
 function MenuLandingPage() {
   const [lang, setLang] = useState("AM");
@@ -89,6 +90,7 @@ function App() {
 
         {/* Admin section with layout */}
         <Route path="/admin" element={<AdminLayout />}>
+          <Route path="tables" element={<Tables />} />
           <Route path="edit-menu" element={<EditMenu />} />
           <Route path="edit-cover" element={<ProtectedRoute><EditCoverPhoto /></ProtectedRoute>} />
           <Route path="settings" element={<Settings />} />

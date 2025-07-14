@@ -15,7 +15,7 @@ function AdminLayout() {
       <AdminNavbar onLogout={handleLogout} />
       <Outlet />
       <footer className="footer">
-        <p>&copy; 2025 Надежные Смартфоны. All rights reserved.</p>
+        <p>&copy; 2025 AterGrid. All rights reserved.</p>
       </footer>
     </>
   );

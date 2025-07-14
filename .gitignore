@@ -1,0 +1,30 @@
+# Ignore node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.*
+
+# Build outputs
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+
+# Coverage reports
+coverage/
+
+# Optional: Next.js or other frameworks
+.next/
+out/

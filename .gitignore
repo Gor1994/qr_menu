@@ -11,8 +11,8 @@ npm-debug.log*
 Thumbs.db
 
 # Environment variables
-.env
-.env.*
+# .env
+# .env.*
 
 # Build outputs
 dist/

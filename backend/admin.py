@@ -37,8 +37,6 @@ tabs_collection = db['menuTabs']
 admin_collection = db['admins']
 items_collection = db['items']
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500 MB
-# AWS_ACCESS_KEY_ID = 'YCAJElh6t6w76f0-Q_TtyRp4Z'
-# AWS_SECRET_ACCESS_KEY = 'YCOwBXzqN-embqgHFUG5UVaj0jkMP13nyp0tMufz'
 # --- Telegram Bot Integration ---
 # Replace with your actual Telegram Bot Token
 # TELEGRAM_BOT_TOKEN = '8053579909:AAH85DDtqdUgm-f5motmn872jhwH7chLtDM'

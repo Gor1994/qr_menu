@@ -1,0 +1,126 @@
+.settings-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-radius: 12px;
+    color: #222;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-admin-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .add-admin-form input,
+  .add-admin-form select {
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #222;
+    flex: 1 1 200px;
+  }
+  
+  .add-admin-form button {
+    padding: 10px 16px;
+    background-color: #3a86ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+  }
+  
+  .add-admin-form button:hover {
+    background-color: #1d5edb;
+  }
+  
+  .admins-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  
+  .admin-card {
+    padding: 1rem;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .admin-card:hover {
+    background: #f0f0f0;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .admin-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    max-width: 360px;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    z-index: 999;
+    color: #222;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  }
+  
+  .admin-modal select {
+    margin-top: 0.5rem;
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  .admin-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .admin-actions button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    flex: 1 1 auto;
+  }
+  
+  .admin-actions .danger {
+    background-color: #e63946;
+    color: white;
+  }
+  
+  .admin-actions button:not(.danger) {
+    background-color: #3a86ff;
+    color: white;
+  }
+  
+  .admin-actions button:hover {
+    opacity: 0.9;
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 600px) {
+    .add-admin-form {
+      flex-direction: column;
+    }
+  
+    .admin-actions {
+      flex-direction: column;
+    }
+  }
+  

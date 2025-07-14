@@ -1,0 +1,45 @@
+/* styles/statistics.css */
+.statistics-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  color: #000;
+}
+
+.statistics-container h2 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.date-picker {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-picker input {
+  padding: 0.5rem;
+  background-color: #f9f9f9;
+  border: 1px solid #444;
+  color: #000;
+  border-radius: 4px;
+}
+
+.stats-box {
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+}
+
+.user-list {
+  margin-top: 1rem;
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.user-list li {
+  margin-bottom: 0.5rem;
+}

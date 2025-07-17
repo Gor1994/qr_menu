@@ -8,7 +8,11 @@ from pymongo import MongoClient
 from flask_cors import CORS
 import os
 
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
 CORS(app)
 #TODO fix with env
 CORS(app, origins=["https://kfc.ater-vpn.ru"])
@@ -24,7 +28,7 @@ partners_collection = db["partners"]
 app.config['DB'] = db
 # Register Blueprints
 app.register_blueprint(partners_bp, url_prefix='/partners')
-app.register_blueprint(branches_bp, url_prefix='/branches')
+app.register_blueprint(branches_bp, url_prefix='/branchesApi')
 app.register_blueprint(menus_bp, url_prefix='/menus')
 app.register_blueprint(items_bp, url_prefix='/items')
 app.register_blueprint(tables_bp, url_prefix='/tables')

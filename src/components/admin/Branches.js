@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/branches.css";
+import { BASE_URL } from "../../config";
 
 const EditBranches = () => {
   const [branches, setBranches] = useState([]);
@@ -10,17 +11,41 @@ const EditBranches = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Mock data for branches
-    const mockBranches = [
-      { _id: "branch-001", name: "Downtown KFC", address: "5 Abovyan St, Yerevan" },
-      { _id: "branch-002", name: "Komitas KFC", address: "125 Komitas Ave, Yerevan" },
-      { _id: "branch-003", name: "Malatia KFC", address: "45 Sebastia St, Yerevan" },
-      { _id: "branch-004", name: "Kentron KFC", address: "1 Republic Square, Yerevan" },
-      { _id: "branch-005", name: "Arabkir KFC", address: "88 Baghramyan Ave, Yerevan" }
-    ];
-    setBranches(mockBranches);
-  }, []);
+  const subdomain = window.location.hostname.split(".")[0];
 
+  const fetchBranches = async () => {
+    const token = localStorage.getItem("jwt_token");
+    const activeBranchId = localStorage.getItem("active_branch_id");
+
+    if (!token || !activeBranchId) return;
+
+    try {
+      const res = await fetch(`${window.location.origin}/api/branchesApi`, {
+        headers: {
+          "X-Restaurant-Id": subdomain,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch branches");
+      const data = await res.json();
+      setBranches(data);
+    } catch (err) {
+      console.error("❌ Branch fetch failed:", err);
+      alert("Failed to load branches. Please check your connection.");
+    }
+  };
+
+  const interval = setInterval(() => {
+    const token = localStorage.getItem("jwt_token");
+    const activeBranchId = localStorage.getItem("active_branch_id");
+    if (token && activeBranchId) {
+      clearInterval(interval);
+      fetchBranches();
+    }
+  }, 200); // Check every 200ms
+
+  return () => clearInterval(interval);
+}, []);
   const handleAddBranch = () => {
     if (!newBranch.name || !newBranch.address) return;
     const newEntry = {
@@ -72,7 +97,7 @@ const EditBranches = () => {
 
       <div className="branch-grid">
         {branches.map((branch) => (
-          <div className="branch-card" key={branch._id} onClick={() => {navigate(`/edit-menu`, { replace: true });}}>
+          <div className="branch-card" key={branch._id} onClick={() => { navigate(`/edit-menu`, { replace: true }); }}>
             <h4>{branch.name}</h4>
             <p>{branch.address}</p>
           </div>

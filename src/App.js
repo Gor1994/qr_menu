@@ -31,7 +31,7 @@ function App() {
           <Route path="edit-menu" element={<EditMenu />} />
           <Route path="edit-cover" element={<EditCoverPhoto />} />
           <Route path="statistics" element={<Statistics />} />
-          <Route path="branches" element={<EditBranches />} />
+          <Route path="" element={<EditBranches />} />
           <Route path="employees" element={<EditEmployees />} />
         </Route>
       </Routes>

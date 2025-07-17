@@ -91,37 +91,73 @@ const ProtectedRoute = ({ children }) => {
     const handleRouting = (decoded) => {
       const { role, restaurantId, branchId, branchIds } = decoded;
       const path = location.pathname;
-      const query = new URLSearchParams(location.search);
-      const branchIdInUrl = query.get("branchId");
 
-      // Ensure subdomain matches restaurantId
+      // 1. Subdomain mismatch protection
       if (restaurantId !== subdomain) {
-        console.warn("❌ Subdomain mismatch");
         localStorage.removeItem("jwt_token");
         redirectToLogin();
         return;
       }
 
-      if (role === "partner") {
-        // Partners go to /branches
-        if (path !== "/branches") {
-          navigate("/branches", { replace: true });
-          return;
-        }
-      }
-
+      // 2. Manager/waiter logic
       if (role === "manager" || role === "waiter") {
-        if (path !== "/edit-menu" || branchIdInUrl !== branchId) {
-          console.warn("❌ Unauthorized branch access. Redirecting...");
-          navigate(`/edit-menu?branchId=${branchId}`, { replace: true });
+        const activeBranchId = localStorage.getItem("active_branch_id");
+
+        if (!activeBranchId) {
+          localStorage.setItem("active_branch_id", branchId);
+        } else if (activeBranchId !== branchId) {
+          console.warn("❌ Branch mismatch. Resetting to correct branch.");
+          localStorage.setItem("active_branch_id", branchId);
+          window.location.reload();
           return;
         }
+
+        setLoading(false);
+        return;
       }
 
-      setLoading(false);
+      // 3. Partner logic
+      if (role === "partner") {
+        console.log("🧩 Partner role detected");
+
+        const activeBranchId = localStorage.getItem("active_branch_id");
+
+        if (!activeBranchId) {
+          console.log("here");
+          
+          // Save list of branchIds
+          if (Array.isArray(branchIds) && branchIds.length > 0) {
+            localStorage.setItem("branch_ids", JSON.stringify(branchIds));
+            localStorage.setItem("active_branch_id", branchIds[0]); // default to first one
+          } else {
+            console.warn("❌ No branchIds found for partner");
+            redirectToLogin();
+            return;
+          }
+
+          const isBranchesRoute =
+            path === "/branches" || path === "/" || window.location.href.includes("/branches");
+
+          if (!isBranchesRoute) {
+            console.log("🔁 Redirecting partner to /branches");
+            navigate("/branches");
+            return;
+          }
+
+          setLoading(false);
+          return;
+        }
+
+        // ✅ Partner already has active branch
+        setLoading(false);
+        return;
+      }
+
+      // 4. Unknown role fallback
+      redirectToLogin();
     };
 
-    // Token from hash (first time login)
+    // Token from hash (first-time login)
     if (tokenFromHash) {
       try {
         const decoded = jwtDecode(tokenFromHash);
@@ -134,7 +170,7 @@ const ProtectedRoute = ({ children }) => {
           redirectToLogin();
         }
       } catch (e) {
-        console.error("Invalid token from hash");
+        console.error("Invalid token from hash:", e);
         redirectToLogin();
       }
       return;
@@ -147,7 +183,7 @@ const ProtectedRoute = ({ children }) => {
         const decoded = jwtDecode(storedToken);
         handleRouting(decoded);
       } catch (e) {
-        console.error("Invalid stored token");
+        console.error("Invalid stored token:", e);
         localStorage.removeItem("jwt_token");
         redirectToLogin();
       }
@@ -155,6 +191,7 @@ const ProtectedRoute = ({ children }) => {
       redirectToLogin();
     }
   }, [location]);
+
 
   if (loading) return null;
 

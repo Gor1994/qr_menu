@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/editMenu.css";
+import { BASE_URL } from "../../config";
 
 const EditMenu = () => {
   const [tabs, setTabs] = useState({ AM: [], RU: [] });
@@ -24,7 +25,8 @@ const EditMenu = () => {
     price: "",
     image: null,
   });
-
+  // TODO fix after adding branches logic
+  const BRANCH_ID = "branch-kfc-1"
   const openEditModal = (item) => {
     setEditingItem(item);
     setEditForm({
@@ -38,7 +40,7 @@ const EditMenu = () => {
   }
   const fetchItemsForSelectedTab = async () => {
     if (!selectedTab) return;
-    const res = await fetch(`http://localhost:5000/api/menu-items?tab=${selectedTab}`);
+    const res = await fetch(`${BASE_URL}/api/items?tab=${selectedTab}&branchId=${BRANCH_ID}`);
     const data = await res.json();
     setItems(data);
   };
@@ -46,39 +48,45 @@ const EditMenu = () => {
     fetchItemsForSelectedTab();
   }, [selectedTab]);
 
-  const handleSaveChanges = async () => {
-    const formData = new FormData();
-    formData.append("itemId", editingItem._id);
-    formData.append("price", editForm.price);
-    formData.append("AM", editForm.AM);
-    formData.append("RU", editForm.RU);
-    formData.append("titleAM", editForm.titleAM);
-    formData.append("titleRU", editForm.titleRU);
-    if (editForm.image) formData.append("image", editForm.image);
+const handleSaveChanges = async () => {
+  const formData = new FormData();
+  formData.append("tabId", selectedTab);
+  formData.append("branchId", BRANCH_ID);
+  formData.append("name", editForm.titleAM);
+  formData.append("titleAM", editForm.titleAM);
+  formData.append("titleRU", editForm.titleRU);
+  formData.append("AM", editForm.AM);
+  formData.append("RU", editForm.RU);
+  formData.append("price", editForm.price);
+  formData.append("image", editingItem.photoUrl || ""); // fallback image
 
-    const res = await fetch("http://localhost:5000/api/menu-items", {
-      method: "PUT",
-      body: formData,
-    });
+  if (editForm.image) {
+    formData.set("image", editForm.image); // override with file
+  }
 
-    const updated = await res.json();
-    setItems((prev) => prev.map((i) => (i._id === updated._id ? updated : i)));
-    await fetchItemsForSelectedTab(); 
-    setEditingItem(null);
-  };
+  const res = await fetch(`${BASE_URL}/api/items/${editingItem._id}`, {
+    method: "PUT",
+    body: formData
+  });
+
+  const updated = await res.json();
+  setItems((prev) => prev.map((i) => (i._id === updated._id ? updated : i)));
+  await fetchItemsForSelectedTab();
+  setEditingItem(null);
+};
 
   const handleDeleteItem = async () => {
-    await fetch(`http://localhost:5000/api/menu-items/${editingItem._id}`, {
+    await fetch(`${BASE_URL}/api/items/${editingItem._id}`, {
       method: "DELETE",
     });
     setItems((prev) => prev.filter((i) => i._id !== editingItem._id));
-    await fetchItemsForSelectedTab(); 
+    await fetchItemsForSelectedTab();
     setEditingItem(null);
   };
 
   // Fetch tabs from DB
   useEffect(() => {
-    fetch("http://localhost:5000/api/menu-tabs")
+    fetch(`${BASE_URL}/api/menus/menu-tabs?branchId=${BRANCH_ID}`)
       .then((res) => res.json())
       .then(setTabs);
   }, []);
@@ -86,28 +94,40 @@ const EditMenu = () => {
   // Fetch items for selected tab
   useEffect(() => {
     if (!selectedTab) return;
-    fetch(`http://localhost:5000/api/menu-items?tab=${selectedTab}`)
+    fetch(`${BASE_URL}/api/items?tab=${selectedTab}&branchId=${BRANCH_ID}`)
       .then((res) => res.json())
       .then(setItems);
   }, [selectedTab]);
 
   const handleTabAdd = () => {
+    console.log("here");
+
     if (!newTab.AM || !newTab.RU) return;
 
     const updated = {
-      AM: [...tabs.AM, newTab.AM],
-      RU: [...tabs.RU, newTab.RU],
+      AM: [...(tabs.AM || []), newTab.AM],
+      RU: [...(tabs.RU || []), newTab.RU],
     };
 
-    fetch("http://localhost:5000/api/menu-tabs", {
+    fetch(`${BASE_URL}/api/menus/menu-tabs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updated),
+      body: JSON.stringify({ ...updated, branchId: BRANCH_ID }),
     })
       .then((res) => res.json())
-      .then(setTabs);
+      .then(() => {
+        // Re-fetch tabs after saving
+        fetch(`${BASE_URL}/api/menus/menu-tabs?branchId=${BRANCH_ID}`)
+          .then((res) => res.json())
+          .then(setTabs)
+          .then((data) => {
+            setTabs(data);
+            setSelectedTab(newTab.AM); // or default to the first tab in the array
+          });;
+      });
 
     setNewTab({ AM: "", RU: "" });
+
   };
 
   const handleItemSubmit = async (e) => {
@@ -120,8 +140,9 @@ const EditMenu = () => {
     formData.append("titleAM", newItem.titleAM);
     formData.append("titleRU", newItem.titleRU);
     formData.append("image", newItem.image);
+    formData.append("branchId", BRANCH_ID);
 
-    const res = await fetch("http://localhost:5000/api/menu-items", {
+    const res = await fetch(`${BASE_URL}/api/items`, {
       method: "POST",
       body: formData,
     });
@@ -136,7 +157,7 @@ const EditMenu = () => {
       price: "",
       image: null,
     });
-    await fetchItemsForSelectedTab(); 
+    await fetchItemsForSelectedTab();
   };
 
   return (
@@ -156,7 +177,9 @@ const EditMenu = () => {
           value={newTab.RU}
           onChange={(e) => setNewTab({ ...newTab, RU: e.target.value })}
         />
-        <button onClick={handleTabAdd}>Ավելացնել բաժին</button>
+        <button type="button" onClick={handleTabAdd}>
+          Ավելացնել բաժին
+        </button>
       </div>
 
       <div className="tab-list">
@@ -231,7 +254,7 @@ const EditMenu = () => {
             <div className="item-grid">
               {items.map((item) => (
                 <div className="item-card" key={item._id} onClick={() => openEditModal(item)}>
-                  <img src={`http://localhost:5000${item.photoUrl}`} alt="" />
+                  <img src={`${BASE_URL}/${item.photoUrl}`} alt="" />
                   <div className="info">
                     <p><b>Վերնագիր:</b> {item.title?.AM}</p>
                     <p><b>Заголовок:</b> {item.title?.RU}</p>
@@ -282,7 +305,7 @@ const EditMenu = () => {
             />
             {editingItem?.photoUrl && (
               <img
-                src={`http://localhost:5000${editingItem.photoUrl}`}
+                src={`${BASE_URL}/${editingItem.photoUrl}`}
                 alt="Current"
                 className="modal-preview-image"
               />

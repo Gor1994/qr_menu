@@ -1,14 +1,38 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import AdminNavbar from "./AdminNavbar"; // extracted navbar here
+import { useEffect, useState } from "react";
+import AdminNavbar from "./AdminNavbar";
 import "../../styles/adminNavbar.css";
 
 function AdminLayout() {
-  const navigate = useNavigate();
+  // const [loading, setLoading] = useState(true);
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const tokenFromUrl = urlParams.get("token");
+
+  //   if (tokenFromUrl) {
+  //     localStorage.setItem("jwt_token", tokenFromUrl);
+
+  //     // Clean up URL
+  //     const cleanUrl = window.location.origin + window.location.pathname;
+  //     window.history.replaceState({}, document.title, cleanUrl);
+  //   }
+
+  //   const token = localStorage.getItem("jwt_token");
+  //   if (!token) {
+  //     window.location.href = "https://login.ater-vpn.ru";
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/admin/login");
+    localStorage.removeItem("jwt_token");
+    window.location.href = "https://login.ater-vpn.ru";
   };
+
+  // if (loading) return null;
 
   return (
     <>

@@ -28,3 +28,4 @@ coverage/
 # Optional: Next.js or other frameworks
 .next/
 out/
+deploy.sh

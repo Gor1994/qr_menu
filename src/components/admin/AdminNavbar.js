@@ -8,6 +8,8 @@ function AdminNavbar({ onLogout }) {
         <li><Link to="/edit-menu">Меню</Link></li>
         <li><Link to="/edit-cover">Обложка</Link></li>
         <li><Link to="/settings">Настройки</Link></li>
+        <li><Link to="/tables">Столики</Link></li>
+        <li><Link to="/employees">Персонал</Link></li>
         <li><button onClick={onLogout} className="logout-button">Выйти</button></li>
       </ul>
     </nav>

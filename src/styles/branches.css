@@ -1,0 +1,80 @@
+@import './editMenu.css'; /* Optional if you want to inherit root variables */
+
+.edit-branches {
+  margin: 40px auto;
+  padding: 0 24px;
+  font-family: "Inter", sans-serif;
+  color: var(--text-gray);
+}
+
+.edit-branches h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 32px;
+}
+
+.branch-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.branch-add input {
+  flex: 1 1 250px;
+  padding: 14px 18px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  background: var(--bg-card);
+  font-size: 15px;
+}
+.branch-add input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: var(--glow);
+}
+
+.branch-add button {
+  padding: 14px 22px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+.branch-add button:hover {
+  background: #e25900;
+}
+
+.branch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.branch-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  transition: transform 0.25s, box-shadow 0.25s;
+  cursor: pointer;
+}
+.branch-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--hover-shadow);
+}
+.branch-card h4 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text-dark);
+}
+.branch-card p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--text-gray);
+}
+
+/* Modal styles reused from editMenu.css */
